@@ -15,8 +15,7 @@
             var dlEarfcn = parseInt(document.getElementById("dlEarfcn").value);
             var carrierBw = parseInt(document.getElementById("carrierBw").value);
             var subCarrierSpacing = 30;
-            var coreset0offset = 12;
-            var coreset0RB = 48;
+
             var nrBand = [
                 {'band' : 41, 'lowest_freq' : 2496000, 'highest_freq' : 2690000, 'lowerset_n_ref' : 499200, 'highest_n_ref' : 537996, 'n_ref_step' : 6, 'lowerest_gscn' : 6252, 'highest_gscn' : 6714, 'gscn_step' : 3},
                 {'band' : 48, 'lowest_freq' : 3550000, 'highest_freq' : 3700000, 'lowerset_n_ref' : 636668, 'highest_n_ref' : 646666, 'n_ref_step' : 2, 'lowerest_gscn' : 7884, 'highest_gscn' : 7982, 'gscn_step' : 1},
@@ -25,7 +24,7 @@
                 {'band' : 79, 'lowest_freq' : 4400000, 'highest_freq' : 5000000, 'lowerset_n_ref' : 693334, 'highest_n_ref' : 733332, 'n_ref_step' : 2, 'lowerest_gscn' : 8475, 'highest_gscn' : 8884, 'gscn_step' : 1}
             ];
 
-            function lowFreqCalc(nrBandIndex) {
+            function lowFreqCalc(nrBandIndex, coreset0RB, coreset0offset) {
                 var absArfcnPointA = dlEarfcn - ((carrierBw * subCarrierSpacing * 12 / 2) / 5);
                 var result = "absArfcnPointA " + absArfcnPointA + ", absFreqPointA " + (5 * absArfcnPointA) + " kHz<br><br>";
 
@@ -76,7 +75,7 @@
                 return result;
             }
 
-            function midFreqCalc(nrBandIndex) {
+            function midFreqCalc(nrBandIndex, coreset0RB, coreset0offset) {
                 var absArfcnPointA = dlEarfcn - ((carrierBw * subCarrierSpacing * 12 / 2) / 15);
                 var absFreqPointA = 3000000 + 15 * (absArfcnPointA - 600000);
                 var result = "absArfcnPointA " + absArfcnPointA + ", absFreqPointA " + absFreqPointA + " kHz<br><br>";
@@ -120,25 +119,36 @@
 				}
 				// not found index
 			}
+			if( carrierBw>=48 ) //du code choose RB>=48, choose 38.213 Table 13-4 index=10
+			{
+				var coreset0RB = 48;
+				var coreset0offset = 12;
+			}
+			else if( carrierBw<48 && carrierBw>= 24) //du code choose RB<48, choose 38.213 Table 13-4 index=0
+			{
+				var coreset0RB = 24;
+				var coreset0offset = 0;
+			}
 			
             if (nrBand[nrBandIndex]['lowest_freq'] > 0 && nrBand[nrBandIndex]['highest_freq'] < 3000000) {
-                result = lowFreqCalc(nrBandIndex);
+                result = lowFreqCalc(nrBandIndex, coreset0RB, coreset0offset);
             } else if (nrBand[nrBandIndex]['lowest_freq'] > 3000000 && nrBand[nrBandIndex]['highest_freq'] < 24250000) {
-                result = midFreqCalc(nrBandIndex);
+                result = midFreqCalc(nrBandIndex, coreset0RB, coreset0offset);
             }
 
             resultDiv.innerHTML = result;
         }
     </script>
 
-    <h1>dlEarfcn to pointA/ssb calculator</h1>
+    <h1> ssb_calculator </h1>
 	<p> Author: Dustin Chen, Email: Dustin_Chen@compal.com </p>	
+	<p> [Usage] Input dlEarfcn & carrierBw, then it will calculate the valid pointA/ssb </p>
 	<p> n41 => freq range [499200, 537996] </p>	
 	<p> n48 => freq range [636668, 646666] </p>	
 	<p> n78 => freq range [620000, 653332] </p>	
 	<p> n79 => freq range [693334, 733332] </p>	
-	<p> Radisys Du code, For BW>=48, choose Spec 38.213 Table 13-4 CORESET index=10, Try to have 48 RB size for CS-0 to avoid allocation failure for SIB1 during SSB(20RBs) overlap </p>	
-	<p> Radisys Du code, For BW<48, choose Spec 38.213 Table 13-4 CORESET index=0, if 48 RB is not available, get the best fit CS0 </p>	
+	<p> Radisys Du code, For BW>=48, choose Spec 38.213 Table 13-4 CORESET index=10 </p> <!-- Try to have 48 RB size for CS-0 to avoid allocation failure for SIB1 during SSB(20RBs) overlap -->
+	<p> Radisys Du code, For BW<48, choose Spec 38.213 Table 13-4 CORESET index=0 </p>	 <!-- if 48 RB is not available, get the best fit CS0 -->
 	<p>(Note) bandwidth RB: SCS30 100M=273RB, 90M=245RB, 80M=217RB, 70M=189RB, 60M=162RB, 50M=133RB, 45M=119RB, 40M=106RB, 35M=92RB, 30M=78RB, 25M=65RB, 20M=51RB, 15M=38RB, 10M=24RB, 5M=11RB</p>
 	<p> Please input the following parameters: ex: (dlEarfcn,carrierBw(RB))=(640256, 273) </p>	
     <label for="dlEarfcn">dlEarfcn:</label>
