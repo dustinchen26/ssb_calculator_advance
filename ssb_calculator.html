@@ -12,10 +12,15 @@
 <body>
     <script>
         function calculate() {
-            var dlEarfcn = parseInt(document.getElementById("dlEarfcn").value);
-            var carrierBw = parseInt(document.getElementById("carrierBw").value);
+        /*  
+			這是javascript裡面註解
+        */
+            var freq_low = parseInt(document.getElementById("freq_low").value);
+			var freq_high = parseInt(document.getElementById("freq_high").value);
+			var carrierBw = parseInt(document.getElementById("carrierBw").value);
             var subCarrierSpacing = 30;
-
+			var offsetToCarrier = 0;
+			
             var nrBand = [
                 {'band' : 41, 'lowest_freq' : 2496000, 'highest_freq' : 2690000, 'lowerset_n_ref' : 499200, 'highest_n_ref' : 537996, 'n_ref_step' : 6, 'lowerest_gscn' : 6252, 'highest_gscn' : 6714, 'gscn_step' : 3},
                 {'band' : 48, 'lowest_freq' : 3550000, 'highest_freq' : 3700000, 'lowerset_n_ref' : 636668, 'highest_n_ref' : 646666, 'n_ref_step' : 2, 'lowerest_gscn' : 7884, 'highest_gscn' : 7982, 'gscn_step' : 1},
@@ -25,9 +30,7 @@
             ];
 
             function lowFreqCalc(nrBandIndex, coreset0RB, coreset0offset) {
-                var absArfcnPointA = dlEarfcn - ((carrierBw * subCarrierSpacing * 12 / 2) / 5);
-                var result = "absArfcnPointA " + absArfcnPointA + ", absFreqPointA " + (5 * absArfcnPointA) + " kHz<br><br>";
-
+                //#5*n_ref=N*1200+M*50, N=1:2499, M:1,3,5, AND { gscn=3N+(M-3)/2 ==> N=(gscn+1)/3, if M=5 ; N=gscn/3, if M=3 ; N=(gscn-1)/3, if M=1 }
                 switch(nrBand[nrBandIndex]['gscn_step']) {
                     case 1:
                         for (var N = 1; N <= 2499; N++) {
@@ -36,7 +39,7 @@
                                 if (gscn >= nrBand[nrBandIndex]['lowerest_gscn'] && gscn <= nrBand[nrBandIndex]['highest_gscn']) {
                                     for (var n_ref = nrBand[nrBandIndex]['lowerset_n_ref']; n_ref <= nrBand[nrBandIndex]['highest_n_ref']; n_ref += nrBand[nrBandIndex]['n_ref_step']) {
                                         if (5 * n_ref === N * 1200 + M * 50) {
-                                            result += "gscn=" + gscn + ", n_ref=" + n_ref + ", freq=" + (5 * n_ref) + " kHz<br>";
+                                            result += "b" + nrBand[nrBandIndex]['band'] + ", gscn=" + gscn + ", n_ref=" + n_ref + ", freq=" + (5 * n_ref) + " kHz<br>";
                                         }
                                     }
                                 }
@@ -60,11 +63,24 @@
                             if (gscn >= nrBand[nrBandIndex]['lowerest_gscn'] && gscn <= nrBand[nrBandIndex]['highest_gscn']) {
                                 for (var n_ref = nrBand[nrBandIndex]['lowerset_n_ref']; n_ref <= nrBand[nrBandIndex]['highest_n_ref']; n_ref += nrBand[nrBandIndex]['n_ref_step']) {
                                     if (5 * n_ref === N * 1200 + M * 50) {
-                                        var coreset0freq = 5 * n_ref - 10 * 12 * subCarrierSpacing - (5 * n_ref - 5 * absArfcnPointA - 10 * 12 * subCarrierSpacing) % (subCarrierSpacing * 12) - coreset0offset * subCarrierSpacing * 12;
-                                        var coreset0end = coreset0freq + coreset0RB * subCarrierSpacing * 12;
-                                        if (coreset0freq >= (5 * absArfcnPointA) && coreset0end <= (5 * absArfcnPointA + carrierBw * 12 * subCarrierSpacing)) {
-                                            result += "gscn=" + gscn + ", absArfcnSsb=" + n_ref + ", absFreqSsb=" + (5 * n_ref) + " kHz<br>";
-                                        }
+										var absFreqSsb = N * 1200 + M * 50;
+										for (var freq = nrBand[nrBandIndex].lowerset_n_ref * 5; freq <= nrBand[nrBandIndex].highest_n_ref * 5; freq += nrBand[nrBandIndex].n_ref_step * 15) 
+										{
+											if ( (freq>= freq_low) && (freq <= freq_high) )
+											{
+												var nDlCenterFreq = freq;
+												var dlEarfcn = nDlCenterFreq / 5;
+												var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * 15;
+												var absArfcnPointA = absFreqPointA / 5;
+												var Kssb = (absFreqSsb - 10 * 12 * subCarrierSpacing - absFreqPointA) % (subCarrierSpacing * 12) / 15;
+												//var offsetToPointA = (absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - absFreqPointA) / (subCarrierSpacing * 12);
+												if ( (nDlCenterFreq + carrierBw * 12 * subCarrierSpacing / 2 >= absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - coreset0offset * 12 * subCarrierSpacing + coreset0RB * 12 * subCarrierSpacing) 
+												&& ((nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 <= absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - coreset0offset * 12 * subCarrierSpacing)) )
+												{
+													result += "b" + nrBand[nrBandIndex]['band'] + ", gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + ", absArfcnPointA=" + absArfcnPointA + ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb" + n_ref + ", dlEarfcn=" + dlEarfcn + ", nDlCenterFreq=" + nDlCenterFreq + "<br>";
+												}
+											}
+										}
                                     }
                                 }
                             }
@@ -76,18 +92,27 @@
             }
 
             function midFreqCalc(nrBandIndex, coreset0RB, coreset0offset) {
-                var absArfcnPointA = dlEarfcn - ((carrierBw * subCarrierSpacing * 12 / 2) / 15);
-                var absFreqPointA = 3000000 + 15 * (absArfcnPointA - 600000);
-                var result = "absArfcnPointA " + absArfcnPointA + ", absFreqPointA " + absFreqPointA + " kHz<br><br>";
-
+                // 3,000,000+15*(n_ref-600,000)=3,000,000+N*1440 ==> (n_ref-600,000)=(gscn-7499)*96 to find all (n_ref,gscn) in the proper freq range
                 for (var gscn = nrBand[nrBandIndex]['lowerest_gscn']; gscn <= nrBand[nrBandIndex]['highest_gscn']; gscn += nrBand[nrBandIndex]['gscn_step']) {
                     for (var n_ref = nrBand[nrBandIndex]['lowerset_n_ref']; n_ref <= nrBand[nrBandIndex]['highest_n_ref']; n_ref += nrBand[nrBandIndex]['n_ref_step']) {
                         if ((gscn - 7499) * 96 === (n_ref - 600000)) {
                             var absFreqSsb = 3000000 + (gscn - 7499) * 1440;
-                            var coreset0freq = absFreqSsb - 10 * 12 * subCarrierSpacing - (absFreqSsb - 5 * absArfcnPointA - 10 * 12 * subCarrierSpacing) % (subCarrierSpacing * 12) - coreset0offset * subCarrierSpacing * 12;
-                            var coreset0end = coreset0freq + coreset0RB * subCarrierSpacing * 12;
-                            if (coreset0freq >= absFreqPointA && coreset0end <= (absFreqPointA + carrierBw * 12 * subCarrierSpacing)) {
-                                result += "gscn " + gscn + ", absArfcnSsb " + n_ref + ", absFreqSsb " + absFreqSsb + " kHz<br>";
+                            for (var freq = (nrBand[nrBandIndex].lowerset_n_ref - 600000) * 15 + 3000000; freq <= (nrBand[nrBandIndex].highest_n_ref - 600000) * 15 + 3000000; freq += nrBand[nrBandIndex].n_ref_step * 15) 
+			            	{
+			            		if( (freq>=freq_low) && (freq<=freq_high) )
+				            	{
+                                    var nDlCenterFreq = freq;
+                                    var dlEarfcn = (nDlCenterFreq - 3000000) / 15 + 600000;
+                                    var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * 15;
+                                    var absArfcnPointA = (absFreqPointA - 3000000) / 15 + 600000;
+                                    var Kssb = (absFreqSsb - 10 * 12 * subCarrierSpacing - absFreqPointA) % (subCarrierSpacing * 12) / 15;
+                                    //var offsetToPointA = (absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - absFreqPointA) / (subCarrierSpacing * 12);
+                                    if ( (nDlCenterFreq + carrierBw * 12 * subCarrierSpacing / 2 >= absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - coreset0offset * 12 * subCarrierSpacing + coreset0RB * 12 * subCarrierSpacing) 
+    				                   && ((nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 <= absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - coreset0offset * 12 * subCarrierSpacing)) )
+					            	{
+					            		result += "b" + nrBand[nrBandIndex]['band'] + ", gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + ", absArfcnPointA=" + absArfcnPointA + ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb" + n_ref + ", dlEarfcn=" + dlEarfcn + ", nDlCenterFreq=" + nDlCenterFreq + "<br>";
+					            	}
+                                }
                             }
                         }
                     }
@@ -102,7 +127,7 @@
 			// loop for the table index
 			for(var t=0; t<5; t++)
 			{
-				if( dlEarfcn>=nrBand[t]['lowerset_n_ref'] && dlEarfcn<=nrBand[t]['highest_n_ref'] )
+			    if ( (freq_low>=nrBand[t]['lowest_freq']) && (freq_high<=nrBand[t]['highest_freq']) )
 				{
 					// The SS raster entries apply for channel bandwidths larger than or equal to 40 MHz
 					if( nrBand[t]['band']===79 &&  carrierBw>=106 )
@@ -117,6 +142,8 @@
 					}
 					var nrBandIndex = t;
 				}
+				console.log("nrBandIndex=", nrBandIndex);
+				
 				// not found index
 			}
 			if( carrierBw>=48 ) //du code choose RB>=48, choose 38.213 Table 13-4 index=10
@@ -142,17 +169,23 @@
 
     <h1> ssb_calculator </h1>
 	<p> Author: Dustin Chen, Email: Dustin_Chen@compal.com </p>	
-	<p> [Usage] Input dlEarfcn & carrierBw, then it will calculate the valid pointA/ssb </p>
-	<p> n41 => freq range [499200, 537996] </p>	
-	<p> n48 => freq range [636668, 646666] </p>	
-	<p> n78 => freq range [620000, 653332] </p>	
-	<p> n79 => freq range [693334, 733332] </p>	
+	<p> [Usage] Input (freq_low,freq_high) & carrierBw, then it will calculate the valid pointA/ssb calculator/nDlCenterFreq </p>	
+	<p> n41 => freq range [2496000, 2690000] </p>	
+	<p> n48 => freq range [3550000, 3700000] </p>	
+	<p> n78 => freq range [3300000, 3800000] </p>	
+	<p> n79 => freq range [4400000, 5000000] </p>	
 	<p> Radisys Du code, For BW>=48, choose Spec 38.213 Table 13-4 CORESET index=10 </p> <!-- Try to have 48 RB size for CS-0 to avoid allocation failure for SIB1 during SSB(20RBs) overlap -->
 	<p> Radisys Du code, For BW<48, choose Spec 38.213 Table 13-4 CORESET index=0 </p>	 <!-- if 48 RB is not available, get the best fit CS0 -->
 	<p>(Note) bandwidth RB: SCS30 100M=273RB, 90M=245RB, 80M=217RB, 70M=189RB, 60M=162RB, 50M=133RB, 45M=119RB, 40M=106RB, 35M=92RB, 30M=78RB, 25M=65RB, 20M=51RB, 15M=38RB, 10M=24RB, 5M=11RB</p>
-	<p> Please input the following parameters: ex: (dlEarfcn,carrierBw(RB))=(640256, 273) </p>	
-    <label for="dlEarfcn">dlEarfcn:</label>
-    <input type="number" id="dlEarfcn" name="dlEarfcn" min="0" max="100000000"><br>
+    <br>
+	<p> Please input the following parameters: ex: n41 (freq_low,freq_high,carrierBw(RB))=(2565749, 2565751, 273) </p>	
+ 
+    <label for="freq_low">freq_low:</label>
+    <input type="number" id="freq_low" name="freq_low" min="0" max="100000000"><br>
+	
+	<label for="freq_high">freq_high:</label>
+    <input type="number" id="freq_high" name="freq_high" min="0" max="100000000"><br>
+	
     <label for="carrierBw">carrierBw(RB):</label>
     <input type="number" id="carrierBw" name="carrierBw" min="0" max="1000"><br>
 
