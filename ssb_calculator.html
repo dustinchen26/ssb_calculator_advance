@@ -27,7 +27,7 @@
 
             function lowFreqCalc(nrBandIndex) {
                 var absArfcnPointA = dlEarfcn - ((carrierBw * subCarrierSpacing * 12 / 2) / 5);
-                var result = "absArfcnPointA " + absArfcnPointA + " absFreqPointA " + (5 * absArfcnPointA) + " kHz<br><br>";
+                var result = "absArfcnPointA " + absArfcnPointA + ", absFreqPointA " + (5 * absArfcnPointA) + " kHz<br><br>";
 
                 switch(nrBand[nrBandIndex]['gscn_step']) {
                     case 1:
@@ -37,7 +37,7 @@
                                 if (gscn >= nrBand[nrBandIndex]['lowerest_gscn'] && gscn <= nrBand[nrBandIndex]['highest_gscn']) {
                                     for (var n_ref = nrBand[nrBandIndex]['lowerset_n_ref']; n_ref <= nrBand[nrBandIndex]['highest_n_ref']; n_ref += nrBand[nrBandIndex]['n_ref_step']) {
                                         if (5 * n_ref === N * 1200 + M * 50) {
-                                            result += "gscn=" + gscn + " (M=" + M + " N=" + N + ") n_ref=" + n_ref + ", freq=" + (5 * n_ref) + " kHz<br>";
+                                            result += "gscn=" + gscn + ", n_ref=" + n_ref + ", freq=" + (5 * n_ref) + " kHz<br>";
                                         }
                                     }
                                 }
@@ -64,7 +64,7 @@
                                         var coreset0freq = 5 * n_ref - 10 * 12 * subCarrierSpacing - (5 * n_ref - 5 * absArfcnPointA - 10 * 12 * subCarrierSpacing) % (subCarrierSpacing * 12) - coreset0offset * subCarrierSpacing * 12;
                                         var coreset0end = coreset0freq + coreset0RB * subCarrierSpacing * 12;
                                         if (coreset0freq >= (5 * absArfcnPointA) && coreset0end <= (5 * absArfcnPointA + carrierBw * 12 * subCarrierSpacing)) {
-                                            result += "gscn=" + gscn + " (M=" + M + " N=" + N + ") absArfcnSsb=" + n_ref + ", absFreqSsb=" + (5 * n_ref) + " kHz<br>";
+                                            result += "gscn=" + gscn + ", absArfcnSsb=" + n_ref + ", absFreqSsb=" + (5 * n_ref) + " kHz<br>";
                                         }
                                     }
                                 }
@@ -79,7 +79,7 @@
             function midFreqCalc(nrBandIndex) {
                 var absArfcnPointA = dlEarfcn - ((carrierBw * subCarrierSpacing * 12 / 2) / 15);
                 var absFreqPointA = 3000000 + 15 * (absArfcnPointA - 600000);
-                var result = "absArfcnPointA " + absArfcnPointA + " absFreqPointA " + absFreqPointA + " kHz<br><br>";
+                var result = "absArfcnPointA " + absArfcnPointA + ", absFreqPointA " + absFreqPointA + " kHz<br><br>";
 
                 for (var gscn = nrBand[nrBandIndex]['lowerest_gscn']; gscn <= nrBand[nrBandIndex]['highest_gscn']; gscn += nrBand[nrBandIndex]['gscn_step']) {
                     for (var n_ref = nrBand[nrBandIndex]['lowerset_n_ref']; n_ref <= nrBand[nrBandIndex]['highest_n_ref']; n_ref += nrBand[nrBandIndex]['n_ref_step']) {
@@ -99,10 +99,26 @@
 
             var resultDiv = document.getElementById("result");
             var result = "";
+			
+			// loop for the table index
 			for(var t=0; t<5; t++)
 			{
 				if( dlEarfcn>=nrBand[t]['lowerset_n_ref'] && dlEarfcn<=nrBand[t]['highest_n_ref'] )
-				var nrBandIndex = t;
+				{
+					// The SS raster entries apply for channel bandwidths larger than or equal to 40 MHz
+					if( nrBand[t]['band']===79 &&  carrierBw>=106 )
+					{
+						var nrBandIndex = 3;
+						break;
+					}
+					else if( nrBand[t]['band']===79 &&  carrierBw<106 )
+					{
+						var nrBandIndex = 4;
+						break;
+					}
+					var nrBandIndex = t;
+				}
+				// not found index
 			}
 			
             if (nrBand[nrBandIndex]['lowest_freq'] > 0 && nrBand[nrBandIndex]['highest_freq'] < 3000000) {
@@ -121,6 +137,8 @@
 	<p> n48 => freq range [636668, 646666] </p>	
 	<p> n78 => freq range [620000, 653332] </p>	
 	<p> n79 => freq range [693334, 733332] </p>	
+	<p> Radisys Du code, For BW>=48, choose Spec 38.213 Table 13-4 CORESET index=10, Try to have 48 RB size for CS-0 to avoid allocation failure for SIB1 during SSB(20RBs) overlap </p>	
+	<p> Radisys Du code, For BW<48, choose Spec 38.213 Table 13-4 CORESET index=0, if 48 RB is not available, get the best fit CS0 </p>	
 	<p>(Note) bandwidth RB: SCS30 100M=273RB, 90M=245RB, 80M=217RB, 70M=189RB, 60M=162RB, 50M=133RB, 45M=119RB, 40M=106RB, 35M=92RB, 30M=78RB, 25M=65RB, 20M=51RB, 15M=38RB, 10M=24RB, 5M=11RB</p>
 	<p> Please input the following parameters: ex: (dlEarfcn,carrierBw(RB))=(640256, 273) </p>	
     <label for="dlEarfcn">dlEarfcn:</label>
