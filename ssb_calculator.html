@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculation Results</title>
+</head>
+<body>
+    <script>
+        function calculate() {
+            var dlEarfcn = parseInt(document.getElementById("dlEarfcn").value);
+            var carrierBw = parseInt(document.getElementById("carrierBw").value);
+            var subCarrierSpacing = 30;
+            var coreset0offset = 12;
+            var coreset0RB = 48;
+            var nrBand = [
+                {'band' : 41, 'lowest_freq' : 2496000, 'highest_freq' : 2690000, 'lowerset_n_ref' : 499200, 'highest_n_ref' : 537996, 'n_ref_step' : 6, 'lowerest_gscn' : 6252, 'highest_gscn' : 6714, 'gscn_step' : 3},
+                {'band' : 48, 'lowest_freq' : 3550000, 'highest_freq' : 3700000, 'lowerset_n_ref' : 636668, 'highest_n_ref' : 646666, 'n_ref_step' : 2, 'lowerest_gscn' : 7884, 'highest_gscn' : 7982, 'gscn_step' : 1},
+                {'band' : 78, 'lowest_freq' : 3300000, 'highest_freq' : 3800000, 'lowerset_n_ref' : 620000, 'highest_n_ref' : 653332, 'n_ref_step' : 2, 'lowerest_gscn' : 7711, 'highest_gscn' : 8051, 'gscn_step' : 1},
+                {'band' : 79, 'lowest_freq' : 4400000, 'highest_freq' : 5000000, 'lowerset_n_ref' : 693334, 'highest_n_ref' : 733332, 'n_ref_step' : 2, 'lowerest_gscn' : 8480, 'highest_gscn' : 8880, 'gscn_step' : 16},
+                {'band' : 79, 'lowest_freq' : 4400000, 'highest_freq' : 5000000, 'lowerset_n_ref' : 693334, 'highest_n_ref' : 733332, 'n_ref_step' : 2, 'lowerest_gscn' : 8475, 'highest_gscn' : 8884, 'gscn_step' : 1}
+            ];
+
+            function lowFreqCalc(nrBandIndex) {
+                var absArfcnPointA = dlEarfcn - ((carrierBw * subCarrierSpacing * 12 / 2) / 5);
+                var result = "absArfcnPointA " + absArfcnPointA + " absFreqPointA " + (5 * absArfcnPointA) + " kHz<br><br>";
+
+                switch(nrBand[nrBandIndex]['gscn_step']) {
+                    case 1:
+                        for (var N = 1; N <= 2499; N++) {
+                            for (var M = 1; M <= 5; M += 2) {
+                                var gscn = 3 * N + (M - 3) / 2;
+                                if (gscn >= nrBand[nrBandIndex]['lowerest_gscn'] && gscn <= nrBand[nrBandIndex]['highest_gscn']) {
+                                    for (var n_ref = nrBand[nrBandIndex]['lowerset_n_ref']; n_ref <= nrBand[nrBandIndex]['highest_n_ref']; n_ref += nrBand[nrBandIndex]['n_ref_step']) {
+                                        if (5 * n_ref === N * 1200 + M * 50) {
+                                            result += "gscn=" + gscn + " (M=" + M + " N=" + N + ") n_ref=" + n_ref + ", freq=" + (5 * n_ref) + " kHz<br>";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+
+                    case 3:
+                        var uu = nrBand[nrBandIndex]['lowerest_gscn'] % 3;
+                        var M;
+                        if (uu === 0) {
+                            M = 3;
+                        } else if (uu === 1) {
+                            M = 5;
+                        } else if (uu === 2) {
+                            M = 1;
+                        }
+
+                        for (var N = 1; N <= 2499; N++) {
+                            var gscn = 3 * N + (M - 3) / 2;
+                            if (gscn >= nrBand[nrBandIndex]['lowerest_gscn'] && gscn <= nrBand[nrBandIndex]['highest_gscn']) {
+                                for (var n_ref = nrBand[nrBandIndex]['lowerset_n_ref']; n_ref <= nrBand[nrBandIndex]['highest_n_ref']; n_ref += nrBand[nrBandIndex]['n_ref_step']) {
+                                    if (5 * n_ref === N * 1200 + M * 50) {
+                                        var coreset0freq = 5 * n_ref - 10 * 12 * subCarrierSpacing - (5 * n_ref - 5 * absArfcnPointA - 10 * 12 * subCarrierSpacing) % (subCarrierSpacing * 12) - coreset0offset * subCarrierSpacing * 12;
+                                        var coreset0end = coreset0freq + coreset0RB * subCarrierSpacing * 12;
+                                        if (coreset0freq >= (5 * absArfcnPointA) && coreset0end <= (5 * absArfcnPointA + carrierBw * 12 * subCarrierSpacing)) {
+                                            result += "gscn=" + gscn + " (M=" + M + " N=" + N + ") absArfcnSsb=" + n_ref + ", absFreqSsb=" + (5 * n_ref) + " kHz<br>";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                }
+
+                return result;
+            }
+
+            function midFreqCalc(nrBandIndex) {
+                var absArfcnPointA = dlEarfcn - ((carrierBw * subCarrierSpacing * 12 / 2) / 15);
+                var absFreqPointA = 3000000 + 15 * (absArfcnPointA - 600000);
+                var result = "absArfcnPointA " + absArfcnPointA + " absFreqPointA " + absFreqPointA + " kHz<br><br>";
+
+                for (var gscn = nrBand[nrBandIndex]['lowerest_gscn']; gscn <= nrBand[nrBandIndex]['highest_gscn']; gscn += nrBand[nrBandIndex]['gscn_step']) {
+                    for (var n_ref = nrBand[nrBandIndex]['lowerset_n_ref']; n_ref <= nrBand[nrBandIndex]['highest_n_ref']; n_ref += nrBand[nrBandIndex]['n_ref_step']) {
+                        if ((gscn - 7499) * 96 === (n_ref - 600000)) {
+                            var absFreqSsb = 3000000 + (gscn - 7499) * 1440;
+                            var coreset0freq = absFreqSsb - 10 * 12 * subCarrierSpacing - (absFreqSsb - 5 * absArfcnPointA - 10 * 12 * subCarrierSpacing) % (subCarrierSpacing * 12) - coreset0offset * subCarrierSpacing * 12;
+                            var coreset0end = coreset0freq + coreset0RB * subCarrierSpacing * 12;
+                            if (coreset0freq >= absFreqPointA && coreset0end <= (absFreqPointA + carrierBw * 12 * subCarrierSpacing)) {
+                                result += "gscn " + gscn + ", absArfcnSsb " + n_ref + ", absFreqSsb " + absFreqSsb + " kHz<br>";
+                            }
+                        }
+                    }
+                }
+
+                return result;
+            }
+
+            var resultDiv = document.getElementById("result");
+            var result = "";
+			for(var t=0; t<5; t++)
+			{
+				if( dlEarfcn>=nrBand[t]['lowerset_n_ref'] && dlEarfcn<=nrBand[t]['highest_n_ref'] )
+				var nrBandIndex = t;
+			}
+			
+            if (nrBand[nrBandIndex]['lowest_freq'] > 0 && nrBand[nrBandIndex]['highest_freq'] < 3000000) {
+                result = lowFreqCalc(nrBandIndex);
+            } else if (nrBand[nrBandIndex]['lowest_freq'] > 3000000 && nrBand[nrBandIndex]['highest_freq'] < 24250000) {
+                result = midFreqCalc(nrBandIndex);
+            }
+
+            resultDiv.innerHTML = result;
+        }
+    </script>
+
+    <h1>Calculation Results</h1>
+    <label for="dlEarfcn">dlEarfcn:</label>
+    <input type="number" id="dlEarfcn" name="dlEarfcn" min="0" max="100000000"><br>
+    <label for="carrierBw">carrierBw:</label>
+    <input type="number" id="carrierBw" name="carrierBw" min="0" max="1000"><br>
+
+    <br>
+    <button onclick="calculate()">Calculate</button>
+    <br><br>
+    <div id="result"></div>
+</body>
+</html>
