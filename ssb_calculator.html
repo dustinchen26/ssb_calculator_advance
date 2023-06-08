@@ -2,6 +2,12 @@
 <html>
 <head>
     <title>Calculation Results</title>
+    <style>
+        p {
+            margin-top: 0.1em;
+            margin-bottom: 0.1em;
+        }
+    </style>	
 </head>
 <body>
     <script>
@@ -109,10 +115,17 @@
         }
     </script>
 
-    <h1>Calculation Results</h1>
+    <h1>dlEarfcn to pointA/ssb calculator</h1>
+	<p> Author: Dustin Chen, Email: Dustin_Chen@compal.com </p>	
+	<p> n41 => freq range [499200, 537996] </p>	
+	<p> n48 => freq range [636668, 646666] </p>	
+	<p> n78 => freq range [620000, 653332] </p>	
+	<p> n79 => freq range [693334, 733332] </p>	
+	<p>(Note) bandwidth RB: SCS30 100M=273RB, 90M=245RB, 80M=217RB, 70M=189RB, 60M=162RB, 50M=133RB, 45M=119RB, 40M=106RB, 35M=92RB, 30M=78RB, 25M=65RB, 20M=51RB, 15M=38RB, 10M=24RB, 5M=11RB</p>
+	<p> Please input the following parameters: ex: (dlEarfcn,carrierBw(RB))=(640256, 273) </p>	
     <label for="dlEarfcn">dlEarfcn:</label>
     <input type="number" id="dlEarfcn" name="dlEarfcn" min="0" max="100000000"><br>
-    <label for="carrierBw">carrierBw:</label>
+    <label for="carrierBw">carrierBw(RB):</label>
     <input type="number" id="carrierBw" name="carrierBw" min="0" max="1000"><br>
 
     <br>
