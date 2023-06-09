@@ -3,22 +3,23 @@ online calculate: https://dustinchen26.github.io/ssb_calculate/
 
 ## Usage
 ```
-Input freq_low, freq_high, carrierBw(RB), then it will calculate the valid gscn/absFreqPointA/absArfcnPointA/absFreqSsb/absArfcnSsb/dlEarfcn/nDlCenterFreq
+Author: Dustin_Chen Email: Dustin_Chen@compal.com or chuhpsdustin@gmail.com
+[Usage] Input (band, freq_low, freq_high, carrierBw(RB)), then it will calculate the valid (gscn /absFreqPointA /absArfcnPointA /absFreqSsb /absArfcnSsb /dlEarfcn /nDlCenterFreq )
 // support BW
 n41 => freq range [2496000, 2690000]
 n48 => freq range [3550000, 3700000]
 n78 => freq range [3300000, 3800000]
 n79 => freq range [4400000, 5000000]
-// CORESET index
 For BW>=48, choose Spec 38.213 Table 13-4 CORESET index=10
 For BW<48, choose Spec 38.213 Table 13-4 CORESET index=0
-// bandwidth RB: 
-SCS30 100M=273RB, 90M=245RB, 80M=217RB, 70M=189RB, 60M=162RB, 50M=133RB, 45M=119RB, 40M=106RB, 35M=92RB, 30M=78RB, 25M=65RB, 20M=51RB, 15M=38RB, 10M=24RB, 5M=11RB
+(Note) bandwidth RB: SCS30 100M=273RB, 90M=245RB, 80M=217RB, 70M=189RB, 60M=162RB, 50M=133RB, 45M=119RB, 40M=106RB, 35M=92RB, 30M=78RB, 25M=65RB, 20M=51RB, 15M=38RB, 10M=24RB, 5M=11RB
+Please input the following parameters: ex:(band,freq_low,freq_high,carrierBw(RB))=(41, 2565749, 2565751, 273)
 ```
 ## Example
 ```
 Please input 3 parameters: 
 ex: 
+band = 41
 freq_low = 2565749
 freq_high = 2565751
 carrierBw(RB) = 273
