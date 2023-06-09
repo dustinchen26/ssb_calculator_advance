@@ -1,7 +1,7 @@
 <!-- 
 	Author: Dustin Chen, Email: Dustin_Chen@compal.com, chuhpsdustin@gmail.com 
 	Copyright © 2023. All rights reserved.
-	[Usage] Input freq_low, freq_high, carrierBw(RB), then it will calculate the valid gscn/absFreqPointA/absArfcnPointA/absFreqSsb/absArfcnSsb/dlEarfcn/nDlCenterFreq
+	[Usage] Input freq_low, freq_high, carrierBw(RB), then it will calculate the valid gscn/absFreqPointA/absArfcnPointA/absFreqSsb/absArfcnSsb/dlEarfcn/nDlCenterFreq/Kssb/offsetToPointA
 -->
 
 <!DOCTYPE html>
@@ -56,11 +56,14 @@
 													var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * 15;
 													var absArfcnPointA = absFreqPointA / 5;
 													var Kssb = (absFreqSsb - 10 * 12 * subCarrierSpacing - absFreqPointA) % (subCarrierSpacing * 12) / 15;
-													//var offsetToPointA = (absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - absFreqPointA) / (subCarrierSpacing * 12);
+													var offsetToPointA = (absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - absFreqPointA) / (15 * 12);
 													if ( (nDlCenterFreq + carrierBw * 12 * subCarrierSpacing / 2 >= absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - coreset0offset * 12 * subCarrierSpacing + coreset0RB * 12 * subCarrierSpacing) 
 													&& ((nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 <= absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - coreset0offset * 12 * subCarrierSpacing)) )
 													{
-														result += "gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + ", absArfcnPointA=" + absArfcnPointA + ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb=" + n_ref + ", dlEarfcn=" + dlEarfcn + ", nDlCenterFreq=" + nDlCenterFreq + "<br>";
+														if( Kssb<0 )
+															continue;
+														else
+															result += "gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + ", absArfcnPointA=" + absArfcnPointA + ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb=" + n_ref + ", dlEarfcn=" + dlEarfcn + ", nDlCenterFreq=" + nDlCenterFreq + ", Kssb=" + Kssb + ", offsetToPointA=" + offsetToPointA + "<br>";
 													}
 												}
 											}
@@ -97,11 +100,14 @@
 												var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * 15;
 												var absArfcnPointA = absFreqPointA / 5;
 												var Kssb = (absFreqSsb - 10 * 12 * subCarrierSpacing - absFreqPointA) % (subCarrierSpacing * 12) / 15;
-												//var offsetToPointA = (absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - absFreqPointA) / (subCarrierSpacing * 12);
+												var offsetToPointA = (absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - absFreqPointA) / (15 * 12);
 												if ( (nDlCenterFreq + carrierBw * 12 * subCarrierSpacing / 2 >= absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - coreset0offset * 12 * subCarrierSpacing + coreset0RB * 12 * subCarrierSpacing) 
 												&& ((nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 <= absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - coreset0offset * 12 * subCarrierSpacing)) )
 												{
-													result += "gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + ", absArfcnPointA=" + absArfcnPointA + ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb=" + n_ref + ", dlEarfcn=" + dlEarfcn + ", nDlCenterFreq=" + nDlCenterFreq + "<br>";
+													if( Kssb<0 )
+														continue;
+													else
+														result += "gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + ", absArfcnPointA=" + absArfcnPointA + ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb=" + n_ref + ", dlEarfcn=" + dlEarfcn + ", nDlCenterFreq=" + nDlCenterFreq + ", Kssb=" + Kssb + ", offsetToPointA=" + offsetToPointA + "<br>";
 												}
 											}
 										}
@@ -130,12 +136,15 @@
                                     var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * 15;
                                     var absArfcnPointA = (absFreqPointA - 3000000) / 15 + 600000;
                                     var Kssb = (absFreqSsb - 10 * 12 * subCarrierSpacing - absFreqPointA) % (subCarrierSpacing * 12) / 15;
-                                    //var offsetToPointA = (absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - absFreqPointA) / (subCarrierSpacing * 12);
+                                    var offsetToPointA = (absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - absFreqPointA) / (15 * 12);
                                     if ( (nDlCenterFreq + carrierBw * 12 * subCarrierSpacing / 2 >= absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - coreset0offset * 12 * subCarrierSpacing + coreset0RB * 12 * subCarrierSpacing) 
     				                   && ((nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 <= absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - coreset0offset * 12 * subCarrierSpacing)) )
-					            	{
-					            		result += "gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + ", absArfcnPointA=" + absArfcnPointA + ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb=" + n_ref + ", dlEarfcn=" + dlEarfcn + ", nDlCenterFreq=" + nDlCenterFreq + "<br>";
-					            	}
+										{
+											if( Kssb<0 )
+												continue;
+											else
+												result += "gscn=" + gscn + ", absFreqPointA=" + absFreqPointA + ", absArfcnPointA=" + absArfcnPointA + ", absFreqSsb=" + absFreqSsb + ", absArfcnSsb=" + n_ref + ", dlEarfcn=" + dlEarfcn + ", nDlCenterFreq=" + nDlCenterFreq + ", Kssb=" + Kssb + ", offsetToPointA=" + offsetToPointA + "<br>";
+										}
                                 }
                             }
                         }
@@ -201,7 +210,7 @@ console.log("nrBandIndex=", nrBandIndex);
 	<p class="author-info">Author: Dustin_Chen</p>
 	<p class="author-info">Email: <a href="mailto:Dustin_Chen@compal.com">Dustin_Chen@compal.com</a></p>
 	<p class="author-info">or <a href="mailto:chuhpsdustin@gmail.com">chuhpsdustin@gmail.com</a></p>
-	<p> [Usage] Input (band, freq_low, freq_high, carrierBw(RB)), then it will calculate the valid (gscn /absFreqPointA /absArfcnPointA /absFreqSsb /absArfcnSsb /dlEarfcn /nDlCenterFreq ) </p>	
+	<p> [Usage] Input (band/ freq_low/ freq_high/ carrierBw(RB)), then it will calculate the valid (gscn /absFreqPointA /absArfcnPointA /absFreqSsb /absArfcnSsb /dlEarfcn /nDlCenterFreq /Kssb /offsetToPointA ) </p>	
 	<p> n41 => freq range [2496000, 2690000] </p>	
 	<p> n48 => freq range [3550000, 3700000] </p>	
 	<p> n78 => freq range [3300000, 3800000] </p>	

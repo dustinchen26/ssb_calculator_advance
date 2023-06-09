@@ -4,7 +4,7 @@ online calculate: https://dustinchen26.github.io/ssb_calculate/
 ## Usage
 ```
 Author: Dustin_Chen Email: Dustin_Chen@compal.com or chuhpsdustin@gmail.com
-[Usage] Input (band, freq_low, freq_high, carrierBw(RB)), then it will calculate the valid (gscn /absFreqPointA /absArfcnPointA /absFreqSsb /absArfcnSsb /dlEarfcn /nDlCenterFreq )
+[Usage] Input (band /freq_low /freq_high /carrierBw(RB)), then it will calculate the valid (gscn /absFreqPointA /absArfcnPointA /absFreqSsb /absArfcnSsb /dlEarfcn /nDlCenterFreq /Kssb /offsetToPointA )
 // support BW
 n41 => freq range [2496000, 2690000]
 n48 => freq range [3550000, 3700000]
@@ -25,8 +25,8 @@ freq_high = 2565751
 carrierBw(RB) = 273
 
 Calculate:
-n41, gscn=6312, absFreqPointA=2516610, absArfcnPointA=503322, absFreqSsb=2524950, absArfcnSsb=504990, dlEarfcn=513150, nDlCenterFreq=2565750
-n41, gscn=6315, absFreqPointA=2516610, absArfcnPointA=503322, absFreqSsb=2526150, absArfcnSsb=505230, dlEarfcn=513150, nDlCenterFreq=2565750
-n41, gscn=6318, absFreqPointA=2516610, absArfcnPointA=503322, absFreqSsb=2527350, absArfcnSsb=505470, dlEarfcn=513150, nDlCenterFreq=2565750
+gscn=6312, absFreqPointA=2516610, absArfcnPointA=503322, absFreqSsb=2524950, absArfcnSsb=504990, dlEarfcn=513150, nDlCenterFreq=2565750, Kssb=4, offsetToPointA=26
+gscn=6315, absFreqPointA=2516610, absArfcnPointA=503322, absFreqSsb=2526150, absArfcnSsb=505230, dlEarfcn=513150, nDlCenterFreq=2565750, Kssb=12, offsetToPointA=32
+gscn=6318, absFreqPointA=2516610, absArfcnPointA=503322, absFreqSsb=2527350, absArfcnSsb=505470, dlEarfcn=513150, nDlCenterFreq=2565750, Kssb=20, offsetToPointA=38
 ... etc
 ```
