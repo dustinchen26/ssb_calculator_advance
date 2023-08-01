@@ -19,6 +19,28 @@
             margin-top: 0.1em;
             margin-bottom: 0.1em;
         }
+		
+    /* 好看一點的表格樣式，可選用 */
+    table {
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: center;
+	  line-height: 0.1; /*  將行高設置為原來的0.1倍 */
+    }
+
+    /* 設置最小行高 */
+    table {
+      table-layout: fixed;
+    }
+
+    td, th {
+      height: 1px;
+      white-space: nowrap;
+    }
+	
     </style>	
 </head>
 <body>
@@ -231,12 +253,10 @@ console.log("nrBandIndex=", nrBandIndex);
 	<p class="author-info">Email: <a href="mailto:Dustin_Chen@compal.com">Dustin_Chen@compal.com</a></p>
 	<p class="author-info">or <a href="mailto:chuhpsdustin@gmail.com">chuhpsdustin@gmail.com</a></p>
 <br>
-<br>
 <p>
     earfcn to freq convert :
     <a href="https://5g-tools.com/5g-nr-arfcn-calculator/" target="_blank" rel="noopener noreferrer">https://5g-tools.com/5g-nr-arfcn-calculator/</a>
 </p>
-	<br><!-- 空行 -->
 	<p> [Usage] Input carrier(band/ freq_low/ freq_high/ carrierBw(RB)), then it will calculate the valid (gscn /absFreqPointA /absArfcnPointA /absFreqSsb /absArfcnSsb /dlEarfcn /nDlCenterFreq /Kssb /offsetToPointA ) </p>	
 	<p> n41 => freq range [2496000, 2690000] </p>	
 	<p> n48 => freq range [3550000, 3700000] </p>	
@@ -248,8 +268,7 @@ console.log("nrBandIndex=", nrBandIndex);
 	<p>(Note) bandwidth RB: SCS30 100M=273RB, 90M=245RB, 80M=217RB, 70M=189RB, 60M=162RB, 50M=133RB, 45M=119RB, 40M=106RB, 35M=92RB, 30M=78RB, 25M=65RB, 20M=51RB, 15M=38RB, 10M=24RB, 5M=11RB</p>
     <br>
 	<p> Please input the following parameters: </p>	
-	<p> ex1:(band, carrierBw(RB), freq_low, freq_high)=(78, 273, 3603840, 3603840) / (79, 273, 4849860, 4849860) / (41, 273, 2565750, 2565750) </p>	
-    <br>
+	<p> ex1:(band, carrierBw(RB), freq_low, freq_high, offsetToCarrier, coreset0RB, coreset0offset)=(48, 106, 3624990, 3624990, 102, 24, 2) //ref 38 508-1 Table 4.3.1.1.1.48-2 n48 and SCS 30 kHz</p>	
     <label for="band">band:</label>
     <input type="number" id="band" name="band" min="0" max="100000000"><br>
 	
@@ -271,8 +290,97 @@ console.log("nrBandIndex=", nrBandIndex);
 	
 	<label for="coreset0offset">coreset0offset:</label>
     <input type="number" id="coreset0offset" name="coreset0offset" min="0" max="100000000"><br>
+    <br><!-- 空行 -->
+	<p> // ETSI TS 138 213 Table 13-6: CORESET for Type0-PDCCH  {SS/PBCH block, PDCCH} SCS is {30, 30} kHz with minimum channel bandwidth 40MHz </p>	
+  <table>
+    <tr>
+      <th>Index</th>
+      <th>coreset0 RBs</th>
+      <th>coreset0 Offset</th>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>24</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>24</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>24</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>24</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>24</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>24</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>24</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>24</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>24</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>24</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>48</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>48</td>
+      <td>14</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>48</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>48</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>48</td>
+      <td>14</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>48</td>
+      <td>16</td>
+    </tr>
+  </table>
 
-    <br>
+    <br><!-- 空行 -->
     <button onclick="calculate()">Calculate</button>
     <br><br>
     <div id="result"></div>
