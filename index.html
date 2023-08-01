@@ -30,9 +30,12 @@
 			var carrierBw = parseInt(document.getElementById("carrierBw").value);
             var freq_low = parseInt(document.getElementById("freq_low").value);
 			var freq_high = parseInt(document.getElementById("freq_high").value);
+			var offsetToCarrier = parseInt(document.getElementById("offsetToCarrier").value);
+			var coreset0RB = parseInt(document.getElementById("coreset0RB").value);
+			var coreset0offset = parseInt(document.getElementById("coreset0offset").value);
 			
             var subCarrierSpacing = 30;
-			var offsetToCarrier = 0;
+			//var offsetToCarrier = 0;
 			
             var nrBand = [
                 {'band' : 41, 'lowest_freq' : 2496000, 'highest_freq' : 2690000, 'lowest_n_ref' : 499200, 'highest_n_ref' : 537996, 'n_ref_step' : 6, 'lowest_gscn' : 6252, 'highest_gscn' : 6714, 'gscn_step' : 3},
@@ -59,7 +62,7 @@
 												{
 													var nDlCenterFreq = freq;
 													var dlEarfcn = nDlCenterFreq / 5;
-													var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * 15;
+													var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * 30;
 													var absArfcnPointA = absFreqPointA / 5;
 													var Kssb = (absFreqSsb - 10 * 12 * subCarrierSpacing - absFreqPointA) % (subCarrierSpacing * 12) / 15;
 													var offsetToPointA = (absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - absFreqPointA) / (15 * 12);
@@ -103,7 +106,7 @@
 											{
 												var nDlCenterFreq = freq;
 												var dlEarfcn = nDlCenterFreq / 5;
-												var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * 15;
+												var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * 30;
 												var absArfcnPointA = absFreqPointA / 5;
 												var Kssb = (absFreqSsb - 10 * 12 * subCarrierSpacing - absFreqPointA) % (subCarrierSpacing * 12) / 15;
 												var offsetToPointA = (absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - absFreqPointA) / (15 * 12);
@@ -139,7 +142,7 @@
 				            	{
                                     var nDlCenterFreq = freq;
                                     var dlEarfcn = (nDlCenterFreq - 3000000) / 15 + 600000;
-                                    var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * 15;
+                                    var absFreqPointA = nDlCenterFreq - carrierBw * 12 * subCarrierSpacing / 2 - offsetToCarrier * 12 * 30;
                                     var absArfcnPointA = (absFreqPointA - 3000000) / 15 + 600000;
                                     var Kssb = (absFreqSsb - 10 * 12 * subCarrierSpacing - absFreqPointA) % (subCarrierSpacing * 12) / 15;
                                     var offsetToPointA = (absFreqSsb - 10 * 12 * subCarrierSpacing - Kssb * 15 - absFreqPointA) / (15 * 12);
@@ -184,7 +187,8 @@
 				// not found index
 			}
 console.log("nrBandIndex=", nrBandIndex);
-			
+
+/*			
 			if( band === 79 )  // use 38.213 Table 13-6 index=4
 			{
 				   // 38.104 V17.3.0 (2021-09) Table 5.3.5-1: BS channel bandwidths and SCS per operating band in FR1 => n79 SCS30 support BW 40,50,60,70,80,90,100
@@ -205,7 +209,7 @@ console.log("nrBandIndex=", nrBandIndex);
 					var coreset0offset = 0;
 				}
 			}
-			
+*/			
             if (nrBand[nrBandIndex]['lowest_freq'] > 0 && nrBand[nrBandIndex]['highest_freq'] < 3000000) {
                 result = lowFreqCalc(nrBandIndex, coreset0RB, coreset0offset);
             } else if (nrBand[nrBandIndex]['lowest_freq'] > 3000000 && nrBand[nrBandIndex]['highest_freq'] < 24250000) {
@@ -258,6 +262,15 @@ console.log("nrBandIndex=", nrBandIndex);
 	
 	<label for="freq_high">freq_high:</label>
     <input type="number" id="freq_high" name="freq_high" min="0" max="100000000"><br>
+
+	<label for="offsetToCarrier">offsetToCarrier:</label>
+    <input type="number" id="offsetToCarrier" name="offsetToCarrier" min="0" max="100000000"><br>
+
+	<label for="coreset0RB">coreset0RB:</label>
+    <input type="number" id="coreset0RB" name="coreset0RB" min="0" max="100000000"><br>
+	
+	<label for="coreset0offset">coreset0offset:</label>
+    <input type="number" id="coreset0offset" name="coreset0offset" min="0" max="100000000"><br>
 
     <br>
     <button onclick="calculate()">Calculate</button>
