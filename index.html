@@ -257,7 +257,7 @@ console.log("nrBandIndex=", nrBandIndex);
     earfcn to freq convert :
     <a href="https://5g-tools.com/5g-nr-arfcn-calculator/" target="_blank" rel="noopener noreferrer">https://5g-tools.com/5g-nr-arfcn-calculator/</a>
 </p>
-	<p> [Usage] Input carrier(band/ freq_low/ freq_high/ carrierBw(RB)), then it will calculate the valid (gscn /absFreqPointA /absArfcnPointA /absFreqSsb /absArfcnSsb /dlEarfcn /nDlCenterFreq /Kssb /offsetToPointA ) </p>	
+	<p> [Usage] Input (band, carrierBw(RB), carrier_freq_low, carrier_freq_high, offsetToCarrier, coreset0numRB, coreset0offsetRB), then it will calculate the valid (gscn /absFreqPointA /absArfcnPointA /absFreqSsb /absArfcnSsb /dlEarfcn /nDlCenterFreq /Kssb /offsetToPointA ) </p>	
 	<p> n41 => freq range [2496000, 2690000] </p>	
 	<p> n48 => freq range [3550000, 3700000] </p>	
 	<p> n78 => freq range [3300000, 3800000] </p>	
@@ -268,7 +268,11 @@ console.log("nrBandIndex=", nrBandIndex);
 	<p>(Note) bandwidth RB: SCS30 100M=273RB, 90M=245RB, 80M=217RB, 70M=189RB, 60M=162RB, 50M=133RB, 45M=119RB, 40M=106RB, 35M=92RB, 30M=78RB, 25M=65RB, 20M=51RB, 15M=38RB, 10M=24RB, 5M=11RB</p>
     <br>
 	<p> Please input the following parameters: </p>	
-	<p> ex1:(band, carrierBw(RB), freq_low, freq_high, offsetToCarrier, coreset0RB, coreset0offset)=(48, 106, 3624990, 3624990, 102, 24, 2) //ref 38 508-1 Table 4.3.1.1.1.48-2 n48 and SCS 30 kHz</p>	
+	<p> (band, carrierBw(RB), carrier_freq_low, carrier_freq_high, offsetToCarrier, coreset0numRB, coreset0offsetRB)= </p>	
+	<p> =(48, 106, 3624990, 3624990, 102, 24, 2) // Example 1: ref 38 508-1 Table 4.3.1.1.1.48-2 n48 and SCS 30 kHz </p>	
+	<p> =(78, 273, 3603840, 3603840, 0, 48, 12) // Example 2 </p>	
+	<p> =(79, 273, 4849860, 4849860, 0, 48, 0) // Example 3 </p>	
+	<p> =(41, 273, 2565750, 2565750, 0, 48, 12) // Example 4 </p>	
     <label for="band">band:</label>
     <input type="number" id="band" name="band" min="0" max="100000000"><br>
 	
@@ -276,10 +280,10 @@ console.log("nrBandIndex=", nrBandIndex);
     <input type="number" id="carrierBw" name="carrierBw" min="0" max="1000"><br>
 	
  
-    <label for="freq_low">freq_low:</label>
+    <label for="freq_low">carrier_freq_low:</label>
     <input type="number" id="freq_low" name="freq_low" min="0" max="100000000"><br>
 	
-	<label for="freq_high">freq_high:</label>
+	<label for="freq_high">carrier_freq_high:</label>
     <input type="number" id="freq_high" name="freq_high" min="0" max="100000000"><br>
 
 	<label for="offsetToCarrier">offsetToCarrier:</label>
@@ -291,12 +295,12 @@ console.log("nrBandIndex=", nrBandIndex);
 	<label for="coreset0offset">coreset0offset:</label>
     <input type="number" id="coreset0offset" name="coreset0offset" min="0" max="100000000"><br>
     <br><!-- 空行 -->
-	<p> // ETSI TS 138 213 Table 13-4: CORESET for Type0-PDCCH  {SS/PBCH block, PDCCH} SCS is {30, 30} kHz with minimum channel bandwidth 40MHz </p>	
+	<p> // 38 213 Table 13-4: Type0-PDCCH {SS/PBCH block, PDCCH} SCS is {30, 30} kHz with minimum channel bandwidth 5 MHz or 10 MHz </p>	
   <table>
     <tr>
       <th>Index</th>
-      <th>coreset0 RBs</th>
-      <th>coreset0 Offset</th>
+      <th>coreset0numRBs</th>
+      <th>coreset0OffsetRB</th>
     </tr>
     <tr>
       <td>0</td>
@@ -377,6 +381,65 @@ console.log("nrBandIndex=", nrBandIndex);
       <td>15</td>
       <td>48</td>
       <td>16</td>
+    </tr>
+  </table>
+    <br><!-- 空行 -->
+	<p> // 38 213 Table 13-6:  Type0-PDCCH {SS/PBCH block, PDCCH} SCS is {30, 30} kHz with minimum channel bandwidth 40MHz  </p>	
+  <table>
+    <tr>
+      <th>Index</th>
+      <th>coreset0numRBs</th>
+      <th>coreset0OffsetRB</th>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>24</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>24</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>24</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>24</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>48</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>48</td>
+      <td>28</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>48</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>48</td>
+      <td>28</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>48</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>48</td>
+      <td>28</td>
     </tr>
   </table>
 
