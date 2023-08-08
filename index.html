@@ -46,10 +46,71 @@
             display: inline-block;
             margin-right: 20px; /* Add some space between tables */
         }
+
+/* 樣式 */		
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h1, h4, label, input, button, p {
+            margin: 0;
+            padding: 0;
+        }
+        button {
+            display: inline-block;
+            margin-top: -5px;
+        }
+        input {
+            width: 100px; /* 設置輸入框的寬度 */
+        }
+        #result1, #result2 {
+            display: inline-block; /* 將輸出結果放在同一行 */
+            margin-left: 10px; /* 調整輸出結果的間距 */
+        }	
+		
     </style>	
 </head>
 <body>
     <script>
+        function calculateFreqToARFCN() {
+            var freq = parseFloat(document.getElementById("freq1").value);
+            var result1 = document.getElementById("result1");
+
+            if (!isNaN(freq)) {
+                if (freq <= 3000000) {
+                    arfcn_calculated = (freq - 0) / 5 + 0;
+                } else if (freq <= 24250000) {
+                    arfcn_calculated = (freq - 3000000) / 15 + 600000;
+                } else {
+                    result1.innerHTML = "Frequency is out of range";
+                    return;
+                }
+
+                result1.innerHTML = "arfcn = " + arfcn_calculated.toFixed(2);
+            } else {
+                result1.innerHTML = "Invalid input. Please enter a valid value.";
+            }
+        }
+
+        function calculateARFCNToFreq() {
+            var arfcn = parseInt(document.getElementById("arfcn").value);
+            var result2 = document.getElementById("result2");
+
+            if (!isNaN(arfcn)) {
+                if (arfcn <= 599999) {
+                    freq_calculated = 0 + 5 * (arfcn - 0);
+                } else if (arfcn <= 2016666) {
+                    freq_calculated = 3000000 + 15 * (arfcn - 600000);
+                } else {
+                    result2.innerHTML = "arfcn is out of range";
+                    return;
+                }
+
+                result2.innerHTML = "Freq = " + freq_calculated.toFixed(2) + " Hz";
+            } else {
+                result2.innerHTML = "Invalid input. Please enter a valid value.";
+            }
+        }	
+	
         function calculate() {
 		
             /*  the user input parameters */
@@ -258,17 +319,32 @@ console.log("nrBandIndex=", nrBandIndex);
 	<p class="author-info">Email: <a href="mailto:Dustin_Chen@compal.com">Dustin_Chen@compal.com</a></p>
 	<p class="author-info">or <a href="mailto:chuhpsdustin@gmail.com">chuhpsdustin@gmail.com</a></p>
 <br>
+
+<!--  
 <p>
     > earfcn to freq convert :
     <a href="https://5g-tools.com/5g-nr-arfcn-calculator/" target="_blank" rel="noopener noreferrer">https://5g-tools.com/5g-nr-arfcn-calculator/</a>
 </p>
-	<p><b> (Description) Input (band, carrierBw(RB), carrier_freq_low, carrier_freq_high, offsetToCarrier, coreset0numRB, coreset0offsetRB), then calculate (gscn /absFreqPointA /absArfcnPointA /absFreqSsb /absArfcnSsb /dlEarfcn /nDlCenterFreq /Kssb /offsetToPointA ) </b></p>	
-	<p> ● band n41 => freq range [2496000, 2690000] </p>	
-	<p> ● band n48 => freq range [3550000, 3700000] </p>	
-	<p> ● band n78 => freq range [3300000, 3800000] </p>	
-	<p> ● band n79 => freq range [4400000, 5000000], coreset0 use 38.213 Table 13-6 Index 4. </p>
-	<p> ● (RadiSys code): For others, if BW>=48, coreset0 use Table 13-4 Index 10. // Try to have 48 RB size for CS-0 to avoid allocation failure for SIB1 during SSB(20RBs) overlap</p> 
-	<p> ● (RadiSys code): For others, if BW<48, use Table Index 0. // if 48 RB is not available, get the best fit CS0  </p> 
+-->
+    <h4>● freq to arfcn</h4>
+    <label for="freq1">freq(Hz):</label>
+    <input type="text" id="freq1">
+    <button onclick="calculateFreqToARFCN()">Calculate</button>
+    <p id="result1"></p>
+<br>
+    <h4>● arfcn to freq</h4>
+    <label for="arfcn">arfcn:</label>
+    <input type="text" id="arfcn">
+    <button onclick="calculateARFCNToFreq()">Calculate</button>
+    <p id="result2"></p>
+<br>	
+	<p><b> ● (Purpose) Input (band, carrierBw(RB), carrier_freq_low, carrier_freq_high, offsetToCarrier, coreset0numRB, coreset0offsetRB), then calculate (gscn /absFreqPointA /absArfcnPointA /absFreqSsb /absArfcnSsb /dlEarfcn /nDlCenterFreq /Kssb /offsetToPointA ) </b></p>	
+	<p> > band n41 => freq range [2496000, 2690000] </p>	
+	<p> > band n48 => freq range [3550000, 3700000] </p>	
+	<p> > band n78 => freq range [3300000, 3800000] </p>	
+	<p> > band n79 => freq range [4400000, 5000000], coreset0 use 38.213 Table 13-6 Index 4. </p>
+	<p> >(RadiSys code): For others, if BW>=48, coreset0 use Table 13-4 Index 10. // Try to have 48 RB size for CS-0 to avoid allocation failure for SIB1 during SSB(20RBs) overlap</p> 
+	<p> >(RadiSys code): For others, if BW<48, use Table Index 0. // if 48 RB is not available, get the best fit CS0  </p> 
 
 	<!--  
 	<p> ● carrierBw(RB): SCS30 
