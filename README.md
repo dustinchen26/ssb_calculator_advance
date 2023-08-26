@@ -1,5 +1,10 @@
-# ssb_calculate
-online calculate: https://dustinchen26.github.io/ssb_calculator_advance/
+# ssb_calculate online
+
+● ssb_basic: https://dustinchen26.github.io/ssb_calculate/
+
+● ssb_advance: https://dustinchen26.github.io/ssb_calculator_advance/
+
+● ssb_xml: https://dustinchen26.github.io/ssb_xml/
 
 ## Usage
 ```
