@@ -341,7 +341,7 @@ console.log("nrBandIndex=", nrBandIndex);
       <ul>
 		<li>	  
 			<label for="freq1">enter freq(Hz):</label>
-			<input type="text" id="freq1">
+			<input type="text" id="freq1" value="3603840">
 			<button onclick="calculateFreqToARFCN()">Calculate</button>
 			<p id="result1"></p>
 		</li>	
@@ -352,7 +352,7 @@ console.log("nrBandIndex=", nrBandIndex);
       <ul>
 		<li>	  
 			<label for="arfcn">enter arfcn:</label>
-			<input type="text" id="arfcn">
+			<input type="text" id="arfcn" value="640256">
 			<button onclick="calculateARFCNToFreq()">Calculate</button>
 			<p id="result2"></p>
 		</li>	
@@ -608,31 +608,31 @@ console.log("nrBandIndex=", nrBandIndex);
   	<b> Please enter the following parameters: </b>
   	<ul>
 		<li> (band, carrierBw(RB), carrier_freq_low, carrier_freq_high, offsetToCarrier, coreset0numRB, coreset0offsetRB)</li>
- = ( 48, 106, 3624990, 3624990, 102, 24, 2) // ref 38 508-1 Table 4.3.1.1.1.48-2 n48 and SCS 30 kHz  <br>
  = ( 78, 273, 3603840, 3603840, 0, 48, 12) <br>
+ = ( 48, 106, 3624990, 3624990, 102, 24, 2) // ref 38 508-1 Table 4.3.1.1.1.48-2 n48 and SCS 30 kHz<br>
  = ( 79, 273, 4849860, 4849860, 0, 48, 0)  <br>
  = ( 41, 273, 2565750, 2565750, 0, 48, 12) <br>
     <label for="band">band:</label>
-    <input type="number" id="band" name="band" min="0" max="100000000"><br>
+    <input type="number" id="band" value="78" name="band" min="0" max="100000000"><br>
 	
     <label for="carrierBw">carrierBw(RB):</label>
-    <input type="number" id="carrierBw" name="carrierBw" min="0" max="1000"><br>
+    <input type="number" id="carrierBw" value="273" name="carrierBw" min="0" max="1000"><br>
 	
  
     <label for="freq_low">carrier_freq_low:</label>
-    <input type="number" id="freq_low" name="freq_low" min="0" max="100000000"><br>
+    <input type="number" id="freq_low" value="3603840" name="freq_low" min="0" max="100000000"><br>
 	
 	<label for="freq_high">carrier_freq_high:</label>
-    <input type="number" id="freq_high" name="freq_high" min="0" max="100000000"><br>
+    <input type="number" id="freq_high" value="3603840" name="freq_high" min="0" max="100000000"><br>
 
 	<label for="offsetToCarrier">offsetToCarrier:</label>
-    <input type="number" id="offsetToCarrier" name="offsetToCarrier" min="0" max="100000000"><br>
+    <input type="number" id="offsetToCarrier" value="0" name="offsetToCarrier" min="0" max="100000000"><br>
 
 	<label for="coreset0RB">coreset0RB:</label>
-    <input type="number" id="coreset0RB" name="coreset0RB" min="0" max="100000000"><br>
+    <input type="number" id="coreset0RB" value="48" name="coreset0RB" min="0" max="100000000"><br>
 	
 	<label for="coreset0offset">coreset0offset:</label>
-    <input type="number" id="coreset0offset" name="coreset0offset" min="0" max="100000000"><br>
+    <input type="number" id="coreset0offset" value="12" name="coreset0offset" min="0" max="100000000"><br>
 
     <button onclick="calculate()">Calculate</button>
     <br><br>
