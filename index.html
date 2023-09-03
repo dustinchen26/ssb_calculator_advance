@@ -80,6 +80,15 @@
         margin-top: 0; /* 去除上边距 */
     }
         }
+
+		/* 超連結藍色 */
+        a {
+            color: blue;
+        }
+
+        .blue-link {
+            color: blue;
+        }
 		
     </style>	
 </head>
@@ -359,8 +368,20 @@ console.log("nrBandIndex=", nrBandIndex);
 	  </ul>
     </li>
 
+
     <li>
-      <strong>Please enter (band, carrierBw(RB), carrier_freq_low, carrier_freq_high, offsetToCarrier, coreset0numRB, coreset0offsetRB), then it will calculate gscn, PointA, Ssb, CenterFreq, Kssb, offsetToPointA </strong>
+      <strong>draw</strong>
+      <ul>
+        <li>
+            <p><a
+            href="https://dustinchen26.github.io/gscn_draw/" target="_blank"
+            class="blue-link">https://dustinchen26.github.io/gscn_draw/</a></p>			
+        </li>
+      </ul>
+    </li>
+
+    <li>
+      <strong>Spec 38.101-1 </strong>
       <ul>
         <li>n41 => freq range [2496000, 2690000]</li>
         <li>n48 => freq range [3550000, 3700000]</li>
@@ -605,7 +626,7 @@ console.log("nrBandIndex=", nrBandIndex);
   </div>
   
 <li>  
-  	<b> Please enter the following parameters: </b>
+  	<b> Please input (band, carrierBw(RB), carrier_freq_low, carrier_freq_high, offsetToCarrier, coreset0numRB, coreset0offsetRB), then it will calculate gscn, PointA, Ssb, CenterFreq, Kssb, offsetToPointA: </b>
   	<ul>
 		<li> (band, carrierBw(RB), carrier_freq_low, carrier_freq_high, offsetToCarrier, coreset0numRB, coreset0offsetRB)</li>
  = ( 78, 273, 3603840, 3603840, 0, 48, 12) <br>
